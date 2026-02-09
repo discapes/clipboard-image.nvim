@@ -40,14 +40,34 @@ end
 
 ---Will be used in utils.is_clipboard_img to check if image data exist
 ---@param command string #command to check clip_content
-M.get_clip_content = function(command)
-  command = io.popen(command)
-  local outputs = {}
+-- M.get_clip_content = function(command)
+--   command = io.popen(command)
+--   local outputs = {}
+--
+--   ---Store output in outputs table
+--   for output in command:lines() do
+--     table.insert(outputs, output)
+--   end
+--   return outputs
+-- end
 
-  ---Store output in outputs table
-  for output in command:lines() do
+---Will be used in utils.is_clipboard_img to check if image data exist
+---@param command string #command to check clip_content
+M.get_clip_content = function(command)
+  local handle = io.popen(command)
+  if not handle then
+    -- print("Failed to execute command: " .. command)
+    return {}
+  end
+
+  local outputs = {}
+  for output in handle:lines() do
     table.insert(outputs, output)
   end
+  handle:close()
+
+  -- print("Command output: " .. vim.inspect(outputs))
+
   return outputs
 end
 
